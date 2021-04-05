@@ -33,5 +33,7 @@ namespace FileParserLibrary
         {
             return necessaryString == string.Empty;
         }
+
+        //todo add validation for null string
     }
 }

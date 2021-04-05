@@ -13,14 +13,19 @@ namespace FileParserTask
     {
         static void Main(string[] args)
         {
-            try
+            //try
+            //{
+            //    ConsoleController application = new ConsoleController(args);
+            //    application.Run();
+            //}
+            //catch (Exception)
+            //{
+            //    Console.WriteLine("Instruction");// todo
+            //}
+
+            using (TextReplacer rep = new TextReplacer(".\\Instruction.txt", "a"))
             {
-                ConsoleController application = new ConsoleController(args);
-                application.Run();
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Instruction");// todo
+                rep.ReplaceString("77");
             }
 
             Console.ReadKey();

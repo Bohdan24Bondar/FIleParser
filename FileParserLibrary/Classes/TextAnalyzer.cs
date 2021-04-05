@@ -21,36 +21,25 @@ namespace FileParserLibrary
             : base(pathToFile)
         {
             _necessaryString = necessaryString;
-            _fileReader = new StreamReader(_destinetionFile);
         }
 
         public override void GetCountStringOverlaps(out int countOverlaps)
         {
-            countOverlaps = 0;
-            string line = string.Empty;
-
-            while ((line = _fileReader.ReadLine()) != null)
+            using (StreamReader reader = new StreamReader(_pathToFile))
             {
-                if (line.Contains(_necessaryString))
+                countOverlaps = 0;
+                string line = string.Empty;
+
+                while ((line = _fileReader.ReadLine()) != null)
                 {
-                    string[] arr = new string[1];
-                    arr[0] = _necessaryString;
-                    string[] lines = line.Split(new string[] { _necessaryString}, 
-                            StringSplitOptions.RemoveEmptyEntries);
-                    countOverlaps += lines.Length - 1;
+                    if (line.Contains(_necessaryString))
+                    {
+                        string[] lines = line.Split(new string[] { _necessaryString },
+                                StringSplitOptions.RemoveEmptyEntries);
+                        countOverlaps += (lines.Length - 1);
+                    }
                 }
             }
-        }
-
-        protected override void Clear()
-        {
-            if (!_isDisposed)
-            {
-                _fileReader.Dispose();
-                _destinetionFile.Dispose();
-            }
-
-            _isDisposed = true;
         }
     }
 }

@@ -93,7 +93,7 @@ namespace FileParserTask
             using (Replacer stringReplacer = new TextReplacer(_args[0], _args[1]))
             {
                 stringReplacer.ReplaceString(_args[2]);
-                replacedCount = stringReplacer.ReplacedCount;
+                replacedCount = stringReplacer.ReplacementsCount;
             }
             
             displayer.ShowMessage(replacedCount);

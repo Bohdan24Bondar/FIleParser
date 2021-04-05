@@ -7,47 +7,28 @@ using System.IO;
 
 namespace FileParserLibrary
 {
-    public abstract class Replacer : IDisposable
+    public abstract class Replacer
     {
         #region Private
 
+        protected int _maxBufferSize;
         protected string _pathToFile;
-        protected FileStream _destinetionFile;
-        protected bool _isDisposed;
+        protected Queue<string> _buffer;
+        protected string _pathToTempFile;
 
         #endregion
 
-        public Replacer(string pathToFile)
+        public Replacer(string pathToFile, int maxBufferSize)
         {
             _pathToFile = pathToFile;
-            _destinetionFile = new FileStream(pathToFile, FileMode.Open, FileAccess.ReadWrite);
-            _isDisposed = false;
-            ReplacedCount = 0;
+            _maxBufferSize = maxBufferSize;
+            _buffer = new Queue<string>();
+            _pathToTempFile = string.Format("{0}.txt", Path.GetRandomFileName());
         }
 
-        public int ReplacedCount { get; protected set; }
+        public int ReplacementsCount { get; protected set; }
 
-        public abstract void ReplaceString(string replacedString);
+        public abstract void ReplaceString(string searchedString, string replacedString);
 
-        public void Dispose()
-        {
-            Clear();
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Clear()
-        {
-            if (!_isDisposed)
-            {
-                _destinetionFile.Dispose();
-            }
-
-            _isDisposed = true;
-        }
-
-        ~Replacer()
-        {
-            Clear();
-        }
     }
 }

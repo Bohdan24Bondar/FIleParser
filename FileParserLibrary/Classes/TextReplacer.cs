@@ -10,51 +10,76 @@ namespace FileParserLibrary
 {
     public class TextReplacer : Replacer
     {
-        #region Private
-
-        private StreamReader _fileReader;
-        private StreamWriter _fileWriter;
-        private string _searchedString;
-
-        #endregion
-
-        public TextReplacer(string pathToFile, string searchedString)
-            : base(pathToFile)
+        public TextReplacer(string pathToFile, int maxBufferSize)
+            : base(pathToFile, maxBufferSize)
         {
-            _searchedString = searchedString;
-            _fileReader = new StreamReader(_destinetionFile);
-            _fileWriter = new StreamWriter(_destinetionFile);
+            
         }
 
-        public override void ReplaceString(string replacedString)
+        public override void ReplaceString(string searchedString, string replacedString)
         {
-            string line = string.Empty;
+            string currentLine = string.Empty;
 
-            while ((line = _fileReader.ReadLine()) != null)
+            try
             {
-                if (line.Contains(_searchedString))
+                using (StreamReader reader = new StreamReader(_pathToFile))
                 {
-                    line = line.Replace(_searchedString, replacedString);
-                    ReplacedCount++;
+                    while ((currentLine = reader.ReadLine()) != null)
+                    {
+                        if (currentLine.Contains(searchedString))
+                        {
+                            currentLine = currentLine.Replace(searchedString, 
+                                    replacedString);
+                            ReplacementsCount++;
+                        }
+
+                        AddLineToBuffer(currentLine);
+                    }
+
+                    if (!IsEmptyBuffer)
+                    {
+                        File.AppendAllLines(_pathToTempFile, _buffer);
+                    }
                 }
+
+                if (File.Exists(_pathToFile))
+                {
+                    File.Delete(_pathToFile);
+                }
+
+                File.Move(_pathToTempFile, _pathToFile);
             }
-
-        }
-
-        protected override void Clear()
-        {
-            if (!_isDisposed)
+            finally
             {
-                _fileReader.Dispose();
-                _destinetionFile.Dispose();
+                File.Delete(_pathToTempFile);
             }
-
-            _isDisposed = true;
         }
 
-        ~TextReplacer()
+        private void AddLineToBuffer(string line)
         {
-            Clear();
-        }   
+            _buffer.Enqueue(line);
+
+            if (!CanAddToBuffer)
+            {
+                File.AppendAllLines(_pathToTempFile, _buffer);
+                _buffer.Clear();
+            }
+        }
+
+        private bool CanAddToBuffer
+        {
+            get
+            {
+                return _buffer.Count < _maxBufferSize;
+            }
+        }
+
+        private bool IsEmptyBuffer
+        {
+            get
+            {
+                return _buffer.Count == 0;
+            }
+        }
     }
 }
