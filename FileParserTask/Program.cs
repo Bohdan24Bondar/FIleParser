@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+
 using FileParserLibrary;
 
 namespace FileParserTask
@@ -11,15 +13,18 @@ namespace FileParserTask
     {
         static void Main(string[] args)
         {
-			try
-			{
-				ConsoleController application = new ConsoleController(args);
-				application.Run();
-			}
-			catch (Exception)
-			{
-				Console.WriteLine("Instruction");// todo
-			}
+            try
+            {
+                ConsoleController application = new ConsoleController(args);
+                application.Run();
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Instruction");// todo
+            }
+
+            Console.ReadKey();
+        
         }
     }
 }

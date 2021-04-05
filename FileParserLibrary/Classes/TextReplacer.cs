@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Xml;
 
 namespace FileParserLibrary
 {
@@ -12,6 +13,7 @@ namespace FileParserLibrary
         #region Private
 
         private StreamReader _fileReader;
+        private StreamWriter _fileWriter;
         private string _searchedString;
 
         #endregion
@@ -21,6 +23,7 @@ namespace FileParserLibrary
         {
             _searchedString = searchedString;
             _fileReader = new StreamReader(_destinetionFile);
+            _fileWriter = new StreamWriter(_destinetionFile);
         }
 
         public override void ReplaceString(string replacedString)
@@ -31,10 +34,11 @@ namespace FileParserLibrary
             {
                 if (line.Contains(_searchedString))
                 {
-                    line.Replace(_searchedString, replacedString);
+                    line = line.Replace(_searchedString, replacedString);
                     ReplacedCount++;
                 }
             }
+
         }
 
         protected override void Clear()
@@ -47,5 +51,10 @@ namespace FileParserLibrary
 
             _isDisposed = true;
         }
+
+        ~TextReplacer()
+        {
+            Clear();
+        }   
     }
 }
